@@ -7,8 +7,8 @@ def hae_lentokentta(icao_koodi):
         host="127.0.0.1",
         port=3306,
         database="flight_game",
-        user="root",
-        passwd="N1k0sB3r",
+        user="censored",
+        password="censored",
         autocommit=True
     )
 
