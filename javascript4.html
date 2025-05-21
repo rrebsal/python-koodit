@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <title>Jaava4</title>
+  <style>
+    img { max-width: 100px; }
+    article { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>Sarja</h1>
+  <form id="searchForm">
+    <input id="query" name="q" type="text" placeholder="Etsi TV-sarja">
+    <input type="submit" value="Search">
+  </form>
+
+  <div id="results"></div>
+
+  <button id="norrisBtn">Chuck Norris hehhehh</button>
+
+  <script>
+    const form = document.getElementById('searchForm');
+    const resultsDiv = document.getElementById('results');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const query = document.getElementById('query').value;
+      const url = `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`;
+      console.log('osoite:', url);
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) throw new Error(`Virihe: ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          console.log('JSON-data:', data);
+          resultsDiv.innerHTML = '';
+
+          data.forEach(tvShow => {
+            const show = tvShow.show;
+            console.log('Sarjan nimi:', show.name);
+
+            const article = document.createElement('article');
+
+            const title = document.createElement('h2');
+            title.textContent = show.name;
+            article.appendChild(title);
+
+            const link = document.createElement('a');
+            link.href = show.url;
+            link.target = '_blank';
+            link.textContent = 'More info';
+            article.appendChild(link);
+
+            const img = document.createElement('img');
+            img.src = show.image?.medium || 'https://via.placeholder.com/210x295?text=Not%20Found';
+            img.alt = show.name;
+            article.appendChild(img);
+
+            const summaryDiv = document.createElement('div');
+            summaryDiv.innerHTML = show.summary || 'No summary available.';
+            article.appendChild(summaryDiv);
+
+            resultsDiv.appendChild(article);
+          });
+        })
+        .catch(error => {
+          console.error('Virhe haettaessa TV-sarjoja:', error);
+        });
+    });
+
+    fetch('https://api.chucknorris.io/jokes/random')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Vitsi', data.value);
+      })
+      .catch(error => {
+        console.error('Ei vitsi ;-;', error);
+      });
+
+    document.getElementById('norrisBtn').addEventListener('click', () => {
+      fetch('https://api.chucknorris.io/jokes/random')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Vitsi', data.value);
+        })
+        .catch(error => {
+          console.error('Ei vitsi ;-;', error);
+        });
+    });
+  </script>
+
+</body>
+</html>
